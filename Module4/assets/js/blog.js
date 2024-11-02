@@ -1,80 +1,37 @@
-// TODO: Create a variable that selects the main element, and a variable that selects the back button element
-
-const textInput = document.querySelector('main');
-const clearBtn = document.querySelector('#clear-all');
-const themeSwitcher = document.querySelector('#theme-switcher');
-const container = document.querySelector('.container');
-const backButton = document.querySelector('button');
-
-let mode = localStorage.getItem('mode');
-container.setAttribute('class', mode);
-
-console.log("mode: " + mode);
-
-
-
-
-
-// TODO: Create a function that builds an element and appends it to the DOM
-
-function buildElements(){
-
-  const img = document.createElement('img');
-  document.appendChild(currentElement);
-
-}
-
-// TODO: Create a function that handles the case where there are no blog posts to display
-
-function noBlogPosts() {
-
-
-
-}
-
-// TODO: Create a function called `renderBlogList` that renders the list of blog posts if they exist. 
-// If not, call the no posts function.
-
-function renderBlogList(){
-
-
-
-
-}
-
-
-
-// TODO: Call the `renderBlogList` function
-
-// TODO: Redirect to the home page using the `redirectPage` function found in logic.js when the back button is clicked
-
-
-
-
-// Listen for a click event on toggle switch
-themeSwitcher.addEventListener('click', function () {
-  // If mode is dark, apply light background
-
-  console.log("mode: " + mode);
-
-  if (mode === 'dark') {
-    mode = 'light';
-    console.log("mode: " + mode);
-    container.setAttribute('class', 'light');
-    localStorage.setItem('mode', mode);
-  }
-  // If mode is light, apply dark background
-  else {
-    mode = 'dark';
-    container.setAttribute('class', 'dark');
-    localStorage.setItem('mode', mode);
-    console.log("mode: " + mode);
-  }
+// Add event listener for the "Back" button
+document.getElementById('back').addEventListener('click', function () {
+    location.href = 'index.html'; // Redirect to the landing page
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const blogListContainer = document.getElementById("blogListContainer");
 
+    let readLocalStorage = JSON.parse(localStorage.getItem('blogPosts')) || [];
 
+    function renderBlogPosts() {
+        blogListContainer.innerHTML = ""; 
 
-backButton.addEventListener('click', function () {
-  window.location.href = "index.html";
+        if (readLocalStorage.length === 0) {
+     
+            const noPostsMessage = document.createElement("p");
+            noPostsMessage.textContent = "No blog posts available.";
+            blogListContainer.appendChild(noPostsMessage);
+        } else {
+     
+            const ul = document.createElement("ul"); 
+            readLocalStorage.forEach(post => {
+                const postElement = document.createElement("li");
+                postElement.classList.add("blog-post");
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p>${post.content}</p>
+                    <p><em>Posted by: ${post.username}</em></p>
+                `;
+                ul.appendChild(postElement);
+            });
+            blogListContainer.appendChild(ul);
+        }
+    }
+
+    renderBlogPosts(); 
 });

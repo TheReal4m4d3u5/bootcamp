@@ -1,40 +1,32 @@
-// TODO: Create logic to toggle the light/dark mode styles for the page and circle. The mode should be saved to local storage.
-
-// if (mode === 'dark') {
-//     mode = 'light';
-//     container.setAttribute('class', 'light');
-//   }
-//   else {
-//     mode = 'dark';
-//     container.setAttribute('class', 'dark');
-//   }
-  
-//   localStorage.setItem('modeLabel', mode);
-  
 
 
-// TODO: Create a function called `readLocalStorage` that reads from local storage and returns the data. If no data exists, return an empty array.
-function readLocalStorage(){
-    let post = localStorage.getItem('posts');
+// Ensure DOM is fully loaded before running the following code
+document.addEventListener("DOMContentLoaded", function () {
+    // Theme toggle button
+    const toggleButton = document.getElementById('toggle');
 
-    if(post === null){
-    return [];
+    if (toggleButton) {
+        toggleButton.addEventListener('click', function () {
+            // Toggle between light and dark modes
+            let mode = localStorage.getItem('mode') || 'light';
+            mode = mode === 'dark' ? 'light' : 'dark';
+            document.body.classList.toggle('dark', mode === 'dark');
+            localStorage.setItem('mode', mode);
+
+            // Update --circle-color based on the mode
+            const circleColor = mode === 'dark' ? '#ff4500' : '#ffb100';
+            document.documentElement.style.setProperty('--circle-color', circleColor);
+        });
+    } else {
+        console.error("Toggle button not found.");
     }
 
-}
+    // Initialize blog posts in localStorage if not present
+    function initializeLocalStorage() {
+        if (!localStorage.getItem('blogPosts')) {
+            localStorage.setItem('blogPosts', JSON.stringify([]));
+        }
+    }
 
-// TODO: Create a function called `storeLocalStorage` that takes a given object and saves the new data to the existing blog data in local storage.
-function storeLocalStorage(){
-
-
-  
-}
-
-// ! Use the following function whenever you need to redirect to a different page
-
-let redirectURL = '';
-
-const redirectPage = function (url) {
-  redirectURL = url;
-  location.assign(url);
-};
+    initializeLocalStorage(); // Set up localStorage on page load
+});

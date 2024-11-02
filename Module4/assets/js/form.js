@@ -1,92 +1,50 @@
-// TODO: Create a variable that selects the form element
-const formV = document.querySelector('form');
+document.addEventListener("DOMContentLoaded", function () {
+    // Select the form element by ID to ensure it's accurately targeted
+    const formEl = document.querySelector('#blogForm'); // Ensure this targets the correct form by ID
 
-const usernameInput = document.getElementById('username');
-const titleInput = document.getElementById('title');
-const contentInput = document.getElementById('content');
-const submit = document.getElementById('submit');
-const errorElement = document.getElementById('error');
-const themeSwitcher = document.querySelector('#theme-switcher');
-const container = document.querySelector('.container');
+    let redirectURL = 'blog.html';
 
-// TODO: Create a function that handles the form submission. 
-// Grab the form data and store it in local storage, 
-// then redirect to the blog page using the `redirectPage` function. 
-// If the form is submitted with missing data, display an error message to the user.
+    // Initialize storeLocalStorage as an array instance
+    const storeLocalStorage = JSON.parse(localStorage.getItem('blogPosts')) || [];
 
-let mode = localStorage.getItem('mode') || "dark";
-container.setAttribute('class', mode);
-localStorage.setItem('mode', mode);
+    // Form submission handler
+    const handleFormSubmit = function (event) {
+        event.preventDefault(); // Prevent the default form submission
 
-let blogPosts = [];
+        // Get form field values
+        const usernameEl = document.querySelector('#username').value.trim();
+        const titleEl = document.querySelector('#title').value.trim();
+        const contentEl = document.querySelector('#content').value.trim();
 
-function submission(event) {
+        // Validate form fields
+        if (!usernameEl || !titleEl || !contentEl) {
+            const errorEl = document.querySelector('#error');
+            errorEl.textContent = 'Please complete the form.';
+            setTimeout(() => (errorEl.textContent = ''), 4000); // Clear error message after 4 seconds
+            return;
+        }
+        
+        const formData = {
+            username: usernameEl,
+            title: titleEl,
+            content: contentEl,
+        };
 
-    // Grab the form data and store it in local storage, 
-    // then redirect to the blog page using the `redirectPage` function. 
-    // If the form is submitted with missing data, display an error message to the user.
+        // Add new form data to storeLocalStorage array and update localStorage
+        storeLocalStorage.push(formData);
+        localStorage.setItem('blogPosts', JSON.stringify(storeLocalStorage));
 
-    event.preventDefault();
+        console.log("Form submitted successfully. Redirecting...");
 
-    const blogPost ={
-
-
-
-        storeVars: function() {
-            this.username = usernameInput.value;
-            this.title = titleInput.value;
-            this.content = contentInput.value;
-          },
+        // Redirect to the blog page after submission
+        location.href = redirectURL;
     };
 
-
-    blogPost.storeVars();
-
-    if (!blogPost.username || !blogPost.title || !blogPost.content) {
-        errorElement.textContent = `Please complete the form.`;
-        errorElement.style.display = 'block';
+    
+    if (formEl) {
+        formEl.addEventListener('submit', handleFormSubmit);
+        console.log("Event listener added successfully.");
     } else {
-
-        let blogPosts = JSON.parse(localStorage.getItem('posts')) || [];
-        blog.push(blogPost);
-        localStorage.setItem('posts', JSON.stringify(blogPosts));
-
-        myredirectPage();
-    }        
-}
-
-// then redirect to the blog page using the `redirectPage` function. 
-
-function myredirectPage(){
-    window.location.href = "blog.html";
-}
-
-
-// TODO: Add an event listener to the form on submit. Call the function to handle the form submission.
-
-submit.addEventListener('click', function (event) {
-    submission(event);
+        console.error("Form element not found."); 
+    }
 });
-
-
-
-
-
-// Listen for a click event on toggle switch
-themeSwitcher.addEventListener('click', function () {
-    // If mode is dark, apply light background
-
-    if (mode === 'dark') {
-      mode = 'light';
-      console.log("mode: " + mode);
-      container.setAttribute('class', 'light');
-      localStorage.setItem('mode', mode);
-    }
-    // If mode is light, apply dark background
-    else {
-      mode = 'dark';
-      container.setAttribute('class', 'dark');
-      localStorage.setItem('mode', mode);
-      console.log("mode: " + mode);
-    }
-  });
